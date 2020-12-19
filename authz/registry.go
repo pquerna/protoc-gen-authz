@@ -13,6 +13,10 @@ type Permission struct {
 	Name string
 }
 
+type MessageRequiresPermission interface {
+	AuthzRequiresPermission() PermissionId
+}
+
 var (
 	roleRegistry       map[string][]PermissionId
 	permissionMap      map[string]PermissionId
