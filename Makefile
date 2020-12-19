@@ -12,7 +12,7 @@ generate:
 	authz/*.proto
 
 example:
-	DEBUG_PG_AUTHZ=true protoc example.proto --proto_path=. --proto_path=examplepb --go_out="paths=source_relative:examplepb" --dynamo_out="lang=go,paths=source_relative:examplepb"
+	DEBUG_PG_AUTHZ=true protoc example.proto --proto_path=. --proto_path=examplepb --go_out="paths=source_relative:examplepb" --authz_out="lang=go,paths=source_relative:examplepb"
 
 .PHONY: adddep
 adddep:

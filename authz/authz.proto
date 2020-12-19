@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package authz;
+
+option go_package = "github.com/pquerna/protoc-gen-authz/authz";
+
+import "google/protobuf/descriptor.proto";
+
+extend google.protobuf.MethodOptions {
+  MethodOptions method = 5999;
+}
+
+message MethodOptions {
+  Roles role = 1;
+  repeated string custom_roles = 2;
+}
+
+enum Roles {
+  UNKNOWN = 0;
+  REFLECTION = 1;
+  VIEWER = 2;
+  EDITOR = 3;
+  OWNER = 4;
+}
+
+extend google.protobuf.ServiceOptions {
+  ServiceOptions service = 5999;
+}
+
+message ServiceOptions {
+  bool disabled = 1;
+}

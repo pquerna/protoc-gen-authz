@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package authz.examplepb;
+
+option go_package = "github.com/pquerna/protoc-gen-authz/examplepb";
+
+import "authz/authz.proto";
+
+service Auth {
+  rpc Introspect(IntrospectRequest) returns (IntrospectResponse) {
+    option (authz.method).role = REFLECTION;
+  }
+}
+
+message IntrospectRequest {}
+
+message IntrospectResponse {}
+
+service Users {
+  rpc Create(CreateRequest) returns (CreateResponse) {
+    option (authz.method).role = EDITOR;
+  }
+  rpc Delete(DeleteRequest) returns (DeleteResponse) {
+    option (authz.method).role = OWNER;
+  }
+  rpc List(ListRequest) returns (ListResponse) {
+    option (authz.method).role = VIEWER;
+  }
+  rpc PasswordReset(PasswordResetRequest) returns (PasswordResetResponse) {
+    option (authz.method).custom_roles = "password_reset";
+  }
+}
+
+message CreateRequest {}
+
+message CreateResponse {}
+
+message DeleteRequest {}
+
+message DeleteResponse {}
+
+message ListRequest {}
+
+message ListResponse {}
+
+message PasswordResetRequest {}
+
+message PasswordResetResponse {}
