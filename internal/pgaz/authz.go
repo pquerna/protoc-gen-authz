@@ -3,10 +3,11 @@ package pgaz
 import (
 	"bytes"
 	"fmt"
-	"github.com/pquerna/protoc-gen-authz/authz"
 	"regexp"
 	"sort"
 	"strings"
+
+	"github.com/pquerna/protoc-gen-authz/authz"
 
 	"github.com/dave/jennifer/jen"
 	pgs "github.com/lyft/protoc-gen-star"
@@ -60,6 +61,8 @@ func (m *Module) Execute(targets map[string]pgs.File, pkgs map[string]pgs.Packag
 }
 
 func (m *Module) processFile(f pgs.File) {
+	// NOTE: this code is poorly structured.  initStatements persists across processing of a single file.
+	m.initStatements = make([]jen.Code, 0)
 	out := bytes.Buffer{}
 	err := m.applyTemplate(&out, f)
 	if err != nil {
