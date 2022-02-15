@@ -3,6 +3,7 @@ package authz
 import (
 	"errors"
 	"fmt"
+	"sort"
 )
 
 // PermissionId is an in-process identifier for a Permission
@@ -78,4 +79,21 @@ func RegisterPermission(permissionName string) Permission {
 	})
 	permissionMap[permissionName] = id
 	return permissionRegistry[id]
+}
+
+// AllPermissions provides a copy of all registered Permissions.
+func AllPermissions() []Permission {
+	rv := make([]Permission, 0, len(permissionRegistry))
+	rv = append(rv, permissionRegistry...)
+	return rv
+}
+
+// AllRoles provides a copy of all registered Role strings.
+func AllRoles() []string {
+	rv := make([]string, 0, len(roleRegistry))
+	for k, _ := range roleRegistry {
+		rv = append(rv, k)
+	}
+	sort.Strings(rv)
+	return rv
 }
