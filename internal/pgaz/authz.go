@@ -154,7 +154,7 @@ func (m *Module) applyService(f *jen.File, service pgs.Service) error {
 			return err
 		}
 		if !ok {
-			return fmt.Errorf("%s: Missing authz.method annotation: Add authz.service.Disbaled=true if authz is not desired for a Service", method.FullyQualifiedName())
+			return fmt.Errorf("%s: Missing authz.method annotation: Add authz.service.Disabled=true if authz is not desired for a Service", method.FullyQualifiedName())
 		}
 		if len(methodOptions.CustomRoles) == 0 && methodOptions.Role == authz.Roles_UNKNOWN {
 			return fmt.Errorf("%s: authz.method annotation: Must set role or custom_roles", method.FullyQualifiedName())
