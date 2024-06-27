@@ -46,3 +46,7 @@ message ListResponse {}
 message PasswordResetRequest {}
 
 message PasswordResetResponse {}
+
+message PasswordsActual {
+  option (authz.message).custom_role = "password_viewer";
+}
