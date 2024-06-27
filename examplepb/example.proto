@@ -46,3 +46,7 @@ message ListResponse {}
 message PasswordResetRequest {}
 
 message PasswordResetResponse {}
+
+message PasswordStuffs {
+  option (authz.role).custom_roles = "password";
+}

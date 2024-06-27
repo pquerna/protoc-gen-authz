@@ -98,6 +98,13 @@ func (m *Module) applyTemplate(buf *bytes.Buffer, in pgs.File) error {
 			return err
 		}
 	}
+
+	for _, message := range in.AllMessages() {
+		if err := m.applyMessage(f, message); err != nil {
+			return err
+		}
+	}
+
 	f.Func().Id("init").Params().Block(
 		m.initStatements...,
 	)
@@ -131,6 +138,9 @@ func (a VarsSorter) Less(i, j int) bool {
 	return a[i].name < a[j].name
 }
 
+func (m *Module) applyMessage(f *jen.File, service pgs.Message) error {
+	return nil
+}
 func (m *Module) applyService(f *jen.File, service pgs.Service) error {
 	variables := map[string]*Vars{}
 	roleToPermissions := map[string][]string{}

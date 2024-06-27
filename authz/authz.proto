@@ -30,3 +30,11 @@ extend google.protobuf.ServiceOptions {
 message ServiceOptions {
   bool disabled = 1;
 }
+
+message MessageRoles {
+  repeated string custom_roles = 1;
+}
+
+extend google.protobuf.MessageOptions {
+  MessageRoles role = 5999;
+}
