@@ -100,7 +100,16 @@ func (m *Module) applyTemplate(buf *bytes.Buffer, in pgs.File) error {
 	}
 
 	for _, message := range in.AllMessages() {
-		if err := m.applyMessage(f, message); err != nil {
+		messageOptions := &authz.MessageOptions{}
+		ok, err := message.Extension(authz.E_Message, messageOptions)
+		if err != nil {
+			return err
+		}
+		if !ok {
+			continue
+		}
+		err = m.applyMessage(f, message, messageOptions)
+		if err != nil {
 			return err
 		}
 	}
@@ -117,6 +126,13 @@ func roleName(service pgs.Service, rn string) string {
 
 func permissionName(service pgs.Service, method pgs.Method) string {
 	return fmt.Sprintf("permission/%s.%s.%s", service.Package().ProtoName().String(), service.Name().String(), method.Name().String())
+}
+
+func messageRoleName(message pgs.Message, customRole string) string {
+	return fmt.Sprintf("role/%s.%s.%s", message.Package().ProtoName().String(), message.Name().String(), customRole)
+}
+func messagePermName(message pgs.Message, customRole string) string {
+	return fmt.Sprintf("permission/%s.%s.%s", message.Package().ProtoName().String(), message.Name().String(), customRole)
 }
 
 var reIdentifier = regexp.MustCompile("[[:^alnum:]]")
@@ -138,7 +154,32 @@ func (a VarsSorter) Less(i, j int) bool {
 	return a[i].name < a[j].name
 }
 
-func (m *Module) applyMessage(f *jen.File, service pgs.Message) error {
+func (m *Module) applyMessage(f *jen.File, message pgs.Message, options *authz.MessageOptions) error {
+	if options.CustomRole == "" {
+		return nil
+	}
+	// make perm
+	varName := pgs.Name(message.Name().String() + pgs.Name(options.CustomRole).UpperCamelCase().String() + "Permission").UpperCamelCase().String()
+	permName := messagePermName(message, options.CustomRole)
+	statement := jen.Id(varName).Op("=").Qual(authzPkg, "RegisterPermission").Call(jen.Lit(permName))
+
+	// make role
+	roleName := pgs.Name(message.Name().String() + pgs.Name(options.CustomRole).UpperCamelCase().String() + "Permission").UpperCamelCase().String()
+
+	f.Var().Defs(statement)
+	jen.Qual(authzPkg, "RegisterRole").Call(jen.Id(permName))
+
+	// for _, k := range roleToPermissionsKeys {
+	// 	permIds := []jen.Code{}
+	// 	for _, perm := range roleToPermissions[k] {
+	// 		permIds = append(permIds, jen.Id(perm).Dot("ID"))
+	// 	}
+	// m.initStatements = append(m.initStatements,
+	// 	jen.Qual(authzPkg, "RegisterRole").Call(jen.Id(varName),
+	// 		jen.Op("[]").Qual(authzPkg, "PermissionId").Values(permIds...),
+	// 	),
+	// )
+
 	return nil
 }
 func (m *Module) applyService(f *jen.File, service pgs.Service) error {

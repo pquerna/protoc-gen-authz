@@ -47,6 +47,6 @@ message PasswordResetRequest {}
 
 message PasswordResetResponse {}
 
-message PasswordStuffs {
-  option (authz.role).custom_roles = "password";
+message PasswordsActual {
+  option (authz.message).custom_role = "password_viewer";
 }
