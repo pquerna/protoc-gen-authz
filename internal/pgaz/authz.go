@@ -10,8 +10,8 @@ import (
 	"github.com/pquerna/protoc-gen-authz/authz"
 
 	"github.com/dave/jennifer/jen"
-	pgs "github.com/lyft/protoc-gen-star"
-	pgsgo "github.com/lyft/protoc-gen-star/lang/go"
+	pgs "github.com/lyft/protoc-gen-star/v2"
+	pgsgo "github.com/lyft/protoc-gen-star/v2/lang/go"
 )
 
 const (
@@ -226,7 +226,7 @@ func (m *Module) applyService(f *jen.File, service pgs.Service) error {
 	f.Var().Defs(statements...)
 
 	roleToPermissionsKeys := make([]string, 0, len(roleToPermissions))
-	for k, _ := range roleToPermissions {
+	for k := range roleToPermissions {
 		roleToPermissionsKeys = append(roleToPermissionsKeys, k)
 	}
 	sort.Strings(roleToPermissionsKeys)

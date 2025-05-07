@@ -21,6 +21,6 @@ adddep:
 
 .PHONY: updatedeps
 updatedeps:
-	go get -u ./...
+	go get -d -u ./...
 	go mod tidy -v
 	go mod vendor
